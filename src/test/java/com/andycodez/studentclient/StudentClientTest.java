@@ -1,18 +1,14 @@
 package com.andycodez.studentclient;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
+import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @SpringBootTest
-@AutoConfigureWireMock
+@AutoConfigureStubRunner(ids = "com.andycodez:student-service:+:8080", stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class StudentClientTest {
 
     @Autowired
@@ -21,18 +17,11 @@ public class StudentClientTest {
     @Test
     void getStudent_forGivenStudent_isReturned() {
         Long id = 1L;
-        stubFor(WireMock.get("/students/" + id).willReturn(okJson("""
-                    {
-                    "id": 1,
-                    "studentName": "Mark",
-                    "grade": 10
-                    }
-                """)));
 
         Student student = studentClient.getStudent(id);
 
         then(student.getId()).isNotNull();
-        then(student.getStudentName()).isEqualTo("Mark");
-        then(student.getGrade()).isEqualTo(10);
+        then(student.getName()).isEqualTo("Mark");
+        then(student.getGrade()).isEqualTo(30);
     }
 }

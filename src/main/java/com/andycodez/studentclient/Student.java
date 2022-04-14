@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class Student {
     private long id;
-    private String studentName;
+    private String name;
     private int grade;
 }
